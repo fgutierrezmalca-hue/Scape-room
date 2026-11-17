@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escape Room - Iglesia Siglo XXI</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #142b4a, #294e70);
+    color: #202b38;
+    padding: 20px;
+    margin: 0;
+}
+
+main {
+    max-width: 850px;
+    margin: auto;
+    background: #f5f2e9;
+    border-radius: 18px;
+    padding: 30px;
+}
+
+h1 {
+    color: #142b4a;
+    text-align: center;
+}
+
+.panel {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+button {
+    background: #142b4a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #24734b;
+}
+
+.option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #e5eaf0;
+    color: #142b4a;
+}
+
+.hidden {
+    display: none;
+}
+
+input {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid gray;
+}
+
+.feedback {
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.good {
+    color: green;
+}
+
+.bad {
+    color: red;
+}
+
+.progress {
+    height: 10px;
+    background: #ddd;
+    border-radius: 10px;
+}
+
+.bar {
+    height: 10px;
+    background: green;
+    width: 0%;
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<h1>🔐 MISIÓN: UNA IGLESIA CON ESPERANZA</h1>
+
+<p>
+En el siglo XXI, la Iglesia enfrenta desafíos que pueden debilitar
+los valores, la fe y el compromiso con los demás.
+Para salir de esta sala deberán superar cinco pruebas.
+</p>
+
+<div class="panel" id="intro">
+<h2>Antes de comenzar</h2>
+
+<p>Formen un equipo de cinco integrantes:</p>
+
+<ul>
+<li>Lector.</li>
+<li>Encargado de respuestas.</li>
+<li>Observador del texto.</li>
+<li>Controlador del tiempo.</li>
+<li>Portavoz.</li>
+</ul>
+
+<p>
+Resuelvan las cinco pruebas. Cada respuesta correcta
+les permitirá conseguir una palabra clave.
+</p>
+
+<button onclick="startGame()">COMENZAR MISIÓN</button>
+</div>
+
+<div id="game" class="hidden">
+
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+
+<p id="counter"></p>
+
+<div class="panel">
+
+<h2 id="title"></h2>
+
+<p id="story"></p>
+
+<div id="question"></div>
+
+<div id="feedback" class="feedback"></div>
+
+<button onclick="showHint()">PISTA</button>
+
+<button id="check" onclick="checkAnswer()">
+COMPROBAR RESPUESTA
+</button>
+
+</div>
+
+<div class="panel">
+<b>Palabras clave obtenidas:</b>
+<p id="keys">Aún ninguna.</p>
+</div>
+
+</div>
+
+<div id="finish" class="hidden panel">
+
+<h2>🎉 ¡MISIÓN CUMPLIDA!</h2>
+
+<p>
+Han superado los cinco desafíos.
+El mensaje final es:
+</p>
+
+<h2 style="text-align:center;color:green">
+FE · VALORES · FORMACIÓN · SERVICIO · ESPERANZA
+</h2>
+
+<p>
+La Iglesia debe responder a la superficialidad, el relativismo
+y el materialismo mediante una fe bien formada, la educación
+en valores, el compromiso familiar y social y el apostolado.
+</p>
+
+<h3>Reflexión final</h3>
+
+<p>
+Como jóvenes cristianos, debemos vivir nuestra fe con coherencia,
+ayudar a quienes nos necesitan y ser ejemplo de respeto,
+solidaridad y esperanza en nuestra sociedad.
+</p>
+
+<p>
+<b>Pregunta:</b> ¿Qué acción concreta podemos realizar
+para llevar esperanza a nuestra comunidad?
+</p>
+
+<button onclick="location.reload()">VOLVER A JUGAR</button>
+
+</div>
+
+</main>
+
+<script>
+
+const challenges = [
+
+{
+title: "PRUEBA 1: EL MENSAJE OCULTO",
+story: "¿Cómo llama el texto a la cultura caracterizada por la superficialidad, la ligereza y la falta de valores?",
+opts: [
+"Cultura del esfuerzo",
+"Cultura light",
+"Cultura de la solidaridad",
+"Cultura científica"
+],
+correct: 1,
+hint: "Es una expresión en inglés utilizada también para productos bajos en calorías.",
+key: "FE"
+},
+
+{
+title: "PRUEBA 2: LOS ESPEJOS DE LA SOCIEDAD",
+story: "¿Qué actitud representa la frase: Compra, usa, tira?",
+opts: [
+"Relativismo",
+"Consumismo",
+"Espiritualidad",
+"Solidaridad"
+],
+correct: 1,
+hint: "Se relaciona con comprar y acumular cada vez más cosas.",
+key: "VALORES"
+},
+
+{
+title: "PRUEBA 3: RECONSTRUIR EL CAMINO",
+story: "Completa la frase: Necesidad de principios sólidos, estables y duraderos para la ______.",
+text: true,
+correctText: "mente",
+hint: "Es la capacidad de pensar y razonar.",
+key: "FORMACIÓN"
+},
+
+{
+title: "PRUEBA 4: LA SOLUCIÓN EN EQUIPO",
+story: "¿Qué debe promover la Iglesia para que los laicos trabajen por los problemas y desafíos de la sociedad?",
+opts: [
+"Que cada persona actúe sin orientación",
+"Los diversos apostolados",
+"Evitar los medios de comunicación",
+"Abandonar la formación"
+],
+correct: 1,
+hint: "Son actividades de compromiso y servicio cristiano.",
+key: "SERVICIO"
+},
+
+{
+title: "PRUEBA 5: LA ÚLTIMA PUERTA",
+story: "¿Con qué actitud debe transmitir la Iglesia el mensaje de Cristo?",
+opts: [
+"Indiferencia",
+"Miedo",
+"Esperanza y alegría",
+"Competencia"
+],
+correct: 2,
+hint: "Es una actitud positiva que nos permite confiar en el futuro.",
+key: "ESPERANZA"
+}
+
+];
+
+let current = 0;
+let keys = [];
+
+function startGame() {
+    document.getElementById("intro").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    render();
+}
+
+function render() {
+
+    let c = challenges[current];
+
+    document.getElementById("counter").textContent =
+    "PRUEBA " + (current + 1) + " DE 5";
+
+    document.getElementById("bar").style.width =
+    (current / 5 * 100) + "%";
+
+    document.getElementById("title").textContent = c.title;
+    document.getElementById("story").textContent = c.story;
+    document.getElementById("feedback").textContent = "";
+
+    let q = document.getElementById("question");
+    q.innerHTML = "";
+    q.dataset.answer = "";
+
+    if (c.text) {
+
+        let input = document.createElement("input");
+        input.id = "textAnswer";
+        input.placeholder = "Escribe tu respuesta";
+        q.appendChild(input);
+
+    } else {
+
+        c.opts.forEach((option, i) => {
+
+            let button = document.createElement("button");
+
+            button.className = "option";
+            button.textContent = (i + 1) + ". " + option;
+
+            button.onclick = function() {
+                q.dataset.answer = i;
+
+                q.querySelectorAll("button").forEach(b => {
+                    b.style.border = "none";
+                });
+
+                button.style.border = "3px solid #e7b84b";
+            };
+
+            q.appendChild(button);
+
+        });
+
+    }
+
+    document.getElementById("keys").textContent =
+    keys.length ? keys.join(" · ") : "Aún ninguna.";
+
+    document.getElementById("check").textContent =
+    "COMPROBAR RESPUESTA";
+
+    document.getElementById("check").onclick = checkAnswer;
+}
+
+function showHint() {
+
+    document.getElementById("feedback").textContent =
+    "PISTA: " + challenges[current].hint;
+
+}
+
+function checkAnswer() {
+
+    let c = challenges[current];
+    let answer;
+
+    if (c.text) {
+
+        answer = document.getElementById("textAnswer").value
+        .trim().toLowerCase();
+
+    } else {
+
+        answer = document.getElementById("question").dataset.answer;
+
+    }
+
+    let correct = c.text
+    ? answer === c.correctText
+    : Number(answer) === c.correct;
+
+    let feedback = document.getElementById("feedback");
+
+    if (correct) {
+
+        if (!keys.includes(c.key)) {
+            keys.push(c.key);
+        }
+
+        feedback.className = "feedback good";
+        feedback.textContent =
+        "¡CORRECTO! PALABRA CLAVE: " + c.key;
+
+        document.getElementById("keys").textContent =
+        keys.join(" · ");
+
+        if (current < 4) {
+
+            document.getElementById("check").textContent =
+            "SIGUIENTE PRUEBA";
+
+            document.getElementById("check").onclick = function() {
+                current++;
+                render();
+            };
+
+        } else {
+
+            document.getElementById("bar").style.width = "100%";
+
+            document.getElementById("check").textContent =
+            "VER MENSAJE FINAL";
+
+            document.getElementById("check").onclick = function() {
+
+                document.getElementById("game").classList.add("hidden");
+
+                document.getElementById("finish").classList.remove("hidden");
+
+            };
+
+        }
+
+    } else {
+
+        feedback.className = "feedback bad";
+        feedback.textContent =
+        "Respuesta incorrecta. ¡Vuelvan a intentarlo!";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
